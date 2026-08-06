@@ -1,0 +1,143 @@
+/**
+ * Jumplinks navigation.
+ *
+ * Deliberately unopinionated: everything a theme is likely to want to change is
+ * exposed as a custom property, and colors fall back to `currentColor` so the
+ * block inherits the block editor's own color controls.
+ *
+ * --hm-jumplinks-accent      Progress marker and hover color.
+ * --hm-jumplinks-rule-color  The rule alongside the vertical list.
+ * --hm-jumplinks-gap         Space between items.
+ * --hm-jumplinks-indent      Space between the rule and the item text.
+ * --hm-jumplinks-gutter      Container inline padding, used by the mobile
+ *                            horizontal scroller to bleed and fade its edges.
+ * --hm-jumplinks-progress    Read-only; set by the view script (0–1).
+ */
+
+.hm-jumplinks-nav {
+	--hm-jumplinks-accent: currentcolor;
+	--hm-jumplinks-rule-color: rgba(0, 0, 0, 0.15);
+	--hm-jumplinks-gap: 0.5rem;
+	--hm-jumplinks-indent: 1rem;
+	--hm-jumplinks-gutter: 1rem;
+}
+
+.hm-jumplinks-nav__label {
+	margin: 0 0 0.75rem;
+	font-size: 0.8em;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.hm-jumplinks-nav__list {
+	position: relative;
+	list-style: none;
+	margin: 0;
+	padding-left: var(--hm-jumplinks-indent);
+	border-left: 1px solid var(--hm-jumplinks-rule-color);
+}
+
+/* Scroll progress, drawn over the list's rule. */
+.hm-jumplinks-nav__list::after {
+	content: "";
+	position: absolute;
+	left: -3px;
+	top: 0;
+	width: 5px;
+	height: calc(var(--hm-jumplinks-progress, 0) * 100%);
+	border-radius: 3px;
+	background: var(--hm-jumplinks-accent);
+	transition: height 0.15s ease-out;
+}
+
+.hm-jumplinks-nav__list li {
+	margin-bottom: var(--hm-jumplinks-gap);
+	line-height: 1.4;
+}
+
+.hm-jumplinks-nav__list li:last-child {
+	margin-bottom: 0;
+}
+
+.hm-jumplinks-nav__list a {
+	text-decoration: none;
+	transition: color 0.2s;
+}
+
+.hm-jumplinks-nav__list a:hover,
+.hm-jumplinks-nav__list a:focus-visible {
+	color: var(--hm-jumplinks-accent);
+	text-decoration: underline;
+}
+
+.hm-jumplinks-nav__list li.is-active {
+	font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+ * Horizontal variants
+ *
+ * A single row of links rather than a sidebar list: the heading and the
+ * progress marker are dropped, since neither reads correctly laid out
+ * horizontally. `horizontal` aligns items to the start; `horizontal-spread`
+ * distributes them, which suits a fixed set of sections in a nav bar.
+ * ---------------------------------------------------------------------- */
+
+.hm-jumplinks-nav.is-style-horizontal,
+.hm-jumplinks-nav.is-style-horizontal-spread {
+	padding: 0;
+
+	.hm-jumplinks-nav__label {
+		display: none;
+	}
+
+	.hm-jumplinks-nav__list {
+		display: flex;
+		flex-wrap: nowrap;
+		gap: var(--hm-jumplinks-gap);
+		padding-left: 0;
+		border-left: none;
+	}
+
+	.hm-jumplinks-nav__list::after {
+		display: none;
+	}
+
+	.hm-jumplinks-nav__list li {
+		margin-bottom: 0;
+		white-space: nowrap;
+	}
+}
+
+.hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list {
+	justify-content: space-between;
+}
+
+.hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list li.is-active a {
+	padding-bottom: 2px;
+	border-bottom: 2px solid currentcolor;
+	text-decoration: none;
+}
+
+/*
+ * On narrow screens a horizontal row can outgrow its container. Rather than
+ * wrapping onto a second line, keep one line and scroll, fading the overflowing
+ * edges. The track bleeds into the container's gutter and re-insets its links
+ * with matching padding, so at either scroll extreme the fade lands on empty
+ * padding and the first/last link stays crisp.
+ */
+@media (max-width: 781px) {
+
+	.hm-jumplinks-nav.is-style-horizontal .hm-jumplinks-nav__list {
+		justify-content: flex-start;
+		overflow-x: auto;
+		scrollbar-width: none;
+		margin-inline: calc(-1 * var(--hm-jumplinks-gutter));
+		padding-inline: var(--hm-jumplinks-gutter);
+		mask-image: linear-gradient(90deg, transparent 0, #000 var(--hm-jumplinks-gutter), #000 calc(100% - var(--hm-jumplinks-gutter)), transparent 100%);
+	}
+
+	.hm-jumplinks-nav.is-style-horizontal .hm-jumplinks-nav__list::-webkit-scrollbar {
+		display: none;
+	}
+}

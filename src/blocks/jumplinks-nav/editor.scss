@@ -1,0 +1,17 @@
+/**
+ * Editor-only presentation for the navigation block.
+ *
+ * The server render returns nothing when there are no jumplinks yet, so the
+ * editor gets an explanatory placeholder instead. Styling it here keeps the
+ * hint out of the front-end stylesheet.
+ */
+.hm-jumplinks-nav--empty {
+	padding: 1em;
+	border: 1px dashed currentcolor;
+	opacity: 0.7;
+}
+
+.hm-jumplinks-nav__help {
+	margin: 0;
+	font-size: 0.8em;
+}

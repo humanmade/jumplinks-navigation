@@ -1,0 +1,46 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "hm/jumplinks-nav",
+	"version": "0.1.0",
+	"title": "Jumplinks Navigation",
+	"category": "design",
+	"icon": "list-view",
+	"description": "A navigation list built automatically from the jumplinks in this content.",
+	"keywords": [ "anchor", "contents", "jump", "navigation", "toc" ],
+	"usesContext": [ "postId", "postType" ],
+	"styles": [
+		{ "name": "vertical", "label": "Vertical", "isDefault": true },
+		{ "name": "horizontal", "label": "Horizontal" },
+		{ "name": "horizontal-spread", "label": "Horizontal (spread)" }
+	],
+	"attributes": {
+		"label": {
+			"type": "string"
+		}
+	},
+	"example": {},
+	"supports": {
+		"html": false,
+		"align": [ "wide", "full" ],
+		"spacing": {
+			"padding": true,
+			"margin": [ "top", "bottom" ]
+		},
+		"color": {
+			"background": true,
+			"text": true,
+			"link": true
+		},
+		"typography": {
+			"fontSize": true,
+			"__experimentalFontFamily": true
+		}
+	},
+	"textdomain": "hm-jumplinks-navigation",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

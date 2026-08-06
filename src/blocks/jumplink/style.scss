@@ -1,0 +1,14 @@
+/**
+ * Front-end jumplink target.
+ *
+ * The element is a zero-height scroll target rather than visible content. Its
+ * scroll margin keeps the following section clear of any sticky header:
+ * `--hm-jumplinks-sticky-offset` is measured at runtime by the navigation
+ * block's view script, and `--hm-jumplink-offset` is the per-anchor extra set
+ * by the author. Both default to 0, so anchors work with neither present.
+ */
+[data-jumplink-title] {
+	display: block;
+	visibility: hidden;
+	scroll-margin-top: calc(var(--hm-jumplinks-sticky-offset, 0px) + var(--hm-jumplink-offset, 0px));
+}

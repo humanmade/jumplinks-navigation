@@ -1,0 +1,34 @@
+/**
+ * Editor placeholder for the jumplink block.
+ *
+ * The block is invisible on the front end, so give it enough presence in the
+ * editor to be selectable and to show where the anchor sits in the flow.
+ */
+.wp-block-hm-jumplink.hm-jumplink {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: center;
+	gap: 0 0.75em;
+	margin: 0;
+	padding: 0.5em 1em;
+	border: 2px dashed currentcolor;
+	color: var(--wp-admin-theme-color, #3858e9);
+	line-height: 1.4;
+}
+
+.hm-jumplink__title {
+	font-size: 1em;
+	font-weight: 600;
+}
+
+.hm-jumplink__link {
+	font-size: 0.8em;
+	opacity: 0.85;
+}
+
+.hm-jumplink__value {
+	padding: 0 0.25em;
+	background: rgba(0, 0, 0, 0.06);
+	color: inherit;
+}

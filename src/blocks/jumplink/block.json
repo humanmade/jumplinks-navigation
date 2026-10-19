@@ -1,40 +1,46 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 3,
-	"name": "hm/jumplink",
-	"version": "0.1.0",
-	"title": "Jumplink",
-	"category": "design",
-	"icon": "admin-links",
-	"description": "A named anchor point for in-page navigation.",
-	"keywords": [ "anchor", "jump", "link", "section", "navigation" ],
-	"attributes": {
-		"anchorId": {
-			"type": "string",
-			"source": "attribute",
-			"selector": "div",
-			"attribute": "id"
-		},
-		"title": {
-			"type": "string",
-			"source": "attribute",
-			"selector": "div",
-			"attribute": "data-jumplink-title"
-		},
-		"offset": {
-			"type": "string",
-			"source": "attribute",
-			"selector": "div",
-			"attribute": "data-jumplink-offset"
-		}
-	},
-	"example": {},
-	"supports": {
-		"html": false,
-		"reusable": false
-	},
-	"textdomain": "hm-jumplinks-navigation",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "hm/jumplink",
+  "version": "0.1.1",
+  "title": "Jumplink",
+  "category": "design",
+  "icon": "admin-links",
+  "description": "A named anchor point for in-page navigation.",
+  "keywords": [
+    "anchor",
+    "jump",
+    "link",
+    "section",
+    "navigation"
+  ],
+  "attributes": {
+    "anchorId": {
+      "type": "string",
+      "source": "attribute",
+      "selector": "div",
+      "attribute": "id"
+    },
+    "title": {
+      "type": "string",
+      "source": "attribute",
+      "selector": "div",
+      "attribute": "data-jumplink-title"
+    },
+    "offset": {
+      "type": "string",
+      "source": "attribute",
+      "selector": "div",
+      "attribute": "data-jumplink-offset"
+    }
+  },
+  "example": {},
+  "supports": {
+    "html": false,
+    "reusable": false
+  },
+  "textdomain": "hm-jumplinks-navigation",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css"
 }

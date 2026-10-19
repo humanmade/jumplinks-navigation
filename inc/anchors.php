@@ -15,6 +15,7 @@ namespace HM\JumplinksNavigation\Anchors;
 
 use WP_Block;
 use WP_Block_Patterns_Registry;
+use WP_HTML_Tag_Processor;
 
 /**
  * Attribute carrying an anchor's human-readable label in saved markup.
@@ -149,20 +150,22 @@ function collect_from_markup( string $html ): array {
 		return [];
 	}
 
-	preg_match_all( '/<[^>]+' . preg_quote( TITLE_ATTRIBUTE, '/' ) . '=["\'][^"\']+["\'][^>]*>/i', $html, $tags );
+	$processor = new WP_HTML_Tag_Processor( $html );
+	$anchors   = [];
 
-	$anchors = [];
+	while ( $processor->next_tag() ) {
+		$id    = $processor->get_attribute( 'id' );
+		$title = $processor->get_attribute( TITLE_ATTRIBUTE );
 
-	foreach ( $tags[0] as $tag ) {
-		if (
-			preg_match( '/\bid=["\']([^"\']+)["\']/', $tag, $id )
-			&& preg_match( '/' . preg_quote( TITLE_ATTRIBUTE, '/' ) . '=["\']([^"\']+)["\']/', $tag, $title )
-		) {
-			$anchors[] = [
-				'id'    => $id[1],
-				'title' => html_entity_decode( $title[1], ENT_QUOTES, 'UTF-8' ),
-			];
+		// Skip tags missing either attribute, including valueless (boolean) attributes.
+		if ( ! is_string( $id ) || '' === $id || ! is_string( $title ) || '' === $title ) {
+			continue;
 		}
+
+		$anchors[] = [
+			'id'    => $id,
+			'title' => $title,
+		];
 	}
 
 	return $anchors;

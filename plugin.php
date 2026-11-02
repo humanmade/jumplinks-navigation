@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       HM Jumplinks Navigation
  * Description:       Named in-page anchor points and an auto-generated navigation list of them.
- * Version:           0.1.1
+ * Version:           0.2.0
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Human Made
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die;
 }
 
-const PLUGIN_VERSION = '0.1.1';
+const PLUGIN_VERSION = '0.2.0';
 const PLUGIN_PATH    = __DIR__;
 
 require_once __DIR__ . '/inc/namespace.php';

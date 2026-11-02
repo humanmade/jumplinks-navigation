@@ -32,6 +32,12 @@
       "source": "attribute",
       "selector": "div",
       "attribute": "data-jumplink-offset"
+    },
+    "level": {
+      "type": "string",
+      "source": "attribute",
+      "selector": "div",
+      "attribute": "data-jumplink-level"
     }
   },
   "example": {},

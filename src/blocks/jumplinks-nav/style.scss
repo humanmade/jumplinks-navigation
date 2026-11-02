@@ -9,6 +9,7 @@
  * --hm-jumplinks-rule-color  The rule alongside the vertical list.
  * --hm-jumplinks-gap         Space between items.
  * --hm-jumplinks-indent      Space between the rule and the item text.
+ * --hm-jumplinks-nested-indent  Indent of nested lists.
  * --hm-jumplinks-gutter      Container inline padding, used by the mobile
  *                            horizontal scroller to bleed and fade its edges.
  * --hm-jumplinks-progress    Read-only; set by the view script (0–1).
@@ -19,6 +20,7 @@
 	--hm-jumplinks-rule-color: rgba(0, 0, 0, 0.15);
 	--hm-jumplinks-gap: 0.5rem;
 	--hm-jumplinks-indent: 1rem;
+	--hm-jumplinks-nested-indent: 1rem;
 	--hm-jumplinks-gutter: 1rem;
 }
 
@@ -70,8 +72,15 @@
 	text-decoration: underline;
 }
 
-.hm-jumplinks-nav__list li.is-active {
+/* Bold only the active item's own link, not a nested list inside it. */
+.hm-jumplinks-nav__list li.is-active > a {
 	font-weight: 700;
+}
+
+.hm-jumplinks-nav__sublist {
+	list-style: none;
+	margin: var(--hm-jumplinks-gap) 0 0;
+	padding-left: var(--hm-jumplinks-nested-indent);
 }
 
 /* --------------------------------------------------------------------------
@@ -107,13 +116,26 @@
 		margin-bottom: 0;
 		white-space: nowrap;
 	}
+
+	/*
+	 * A single row has no room for nesting, so it shows only the top level,
+	 * with a hidden active item's section marked active instead.
+	 */
+	.hm-jumplinks-nav__sublist {
+		display: none;
+	}
+
+	.hm-jumplinks-nav__list li.is-active-ancestor > a {
+		font-weight: 700;
+	}
 }
 
 .hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list {
 	justify-content: space-between;
 }
 
-.hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list li.is-active a {
+.hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list li.is-active > a,
+.hm-jumplinks-nav.is-style-horizontal-spread .hm-jumplinks-nav__list li.is-active-ancestor > a {
 	padding-bottom: 2px;
 	border-bottom: 2px solid currentcolor;
 	text-decoration: none;

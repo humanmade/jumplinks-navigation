@@ -1,5 +1,5 @@
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { PanelBody, TextControl } from '@wordpress/components';
+import { PanelBody, SelectControl, TextControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import './editor.scss';
@@ -23,7 +23,16 @@ const slugify = ( text ) =>
 		.replace( /^-|-$/g, '' );
 
 /**
- * Edit the jumplink's title, slug and scroll offset.
+ * Levels offered in the editor; deeper levels can still be saved in markup.
+ */
+const LEVEL_OPTIONS = [
+	{ label: __( 'Top level', 'hm-jumplinks-navigation' ), value: '1' },
+	{ label: __( 'Level 2', 'hm-jumplinks-navigation' ), value: '2' },
+	{ label: __( 'Level 3', 'hm-jumplinks-navigation' ), value: '3' },
+];
+
+/**
+ * Edit the jumplink's title, slug, level and scroll offset.
  *
  * The block renders nothing on the front end, so the editor shows a labelled
  * placeholder telling the author what the anchor is and how to link to it.
@@ -34,7 +43,7 @@ const slugify = ( text ) =>
  * @return {Element} Editor markup.
  */
 export default function Edit( { attributes, setAttributes } ) {
-	const { anchorId, title, offset } = attributes;
+	const { anchorId, title, offset, level } = attributes;
 	const blockProps = useBlockProps( { className: 'hm-jumplink' } );
 
 	/**
@@ -90,6 +99,21 @@ export default function Edit( { attributes, setAttributes } ) {
 						value={ anchorId || '' }
 						onChange={ ( value ) =>
 							setAttributes( { anchorId: value } )
+						}
+					/>
+					<SelectControl
+						__nextHasNoMarginBottom
+						label={ __( 'Level', 'hm-jumplinks-navigation' ) }
+						help={ __(
+							'Nests this link under the closest earlier link one level up.',
+							'hm-jumplinks-navigation'
+						) }
+						options={ LEVEL_OPTIONS }
+						value={ level || '1' }
+						onChange={ ( value ) =>
+							setAttributes( {
+								level: value === '1' ? undefined : value,
+							} )
 						}
 					/>
 					<TextControl

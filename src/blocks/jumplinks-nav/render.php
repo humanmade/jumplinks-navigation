@@ -55,12 +55,36 @@ $label = $attributes['label'] ?? __( 'Contents', 'hm-jumplinks-navigation' );
 		<p class="hm-jumplinks-nav__label"><?php echo esc_html( $label ); ?></p>
 	<?php endif; ?>
 	<ol class="hm-jumplinks-nav__list">
-		<?php foreach ( $anchors as $anchor ) : ?>
-			<li>
-				<a href="#<?php echo esc_attr( $anchor['id'] ); ?>">
-					<?php echo esc_html( $anchor['title'] ); ?>
-				</a>
-			</li>
-		<?php endforeach; ?>
+		<?php
+		/*
+		 * Each item stays open until the next one, so a deeper item opens a
+		 * nested list inside it. A level can only go one deeper than the item
+		 * before it, so skipped levels never leave empty list items.
+		 */
+		$depth = 0;
+		foreach ( $anchors as $anchor ) {
+			$level = min( max( 1, (int) ( $anchor['level'] ?? 1 ) ), $depth + 1 );
+
+			if ( $level > $depth && $depth > 0 ) {
+				echo '<ol class="hm-jumplinks-nav__sublist">';
+			} elseif ( $depth > 0 ) {
+				echo '</li>';
+				for ( $closing = $level; $closing < $depth; $closing++ ) {
+					echo '</ol></li>';
+				}
+			}
+
+			printf(
+				'<li><a href="#%1$s">%2$s</a>',
+				esc_attr( $anchor['id'] ),
+				esc_html( $anchor['title'] )
+			);
+			$depth = $level;
+		}
+		echo '</li>';
+		for ( $closing = 1; $closing < $depth; $closing++ ) {
+			echo '</ol></li>';
+		}
+		?>
 	</ol>
 </nav>

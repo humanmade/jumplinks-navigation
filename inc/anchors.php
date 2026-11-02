@@ -26,6 +26,11 @@ use WP_HTML_Tag_Processor;
 const TITLE_ATTRIBUTE = 'data-jumplink-title';
 
 /**
+ * Attribute carrying an anchor's nesting level in saved markup, omitted at the top level.
+ */
+const LEVEL_ATTRIBUTE = 'data-jumplink-level';
+
+/**
  * Query argument the editor uses to preview a template's anchors.
  */
 const TEMPLATE_QUERY_ARG = 'hm_jumplinks_template';
@@ -86,7 +91,7 @@ function get_source_content( WP_Block $block ): string {
  * Collect the anchors present in a block markup string, in document order.
  *
  * @param string $content Block markup.
- * @return array<int, array{id: string, title: string}> Anchor id/title pairs.
+ * @return array<int, array{id: string, title: string, level: int}> Anchors, with level 1 at the top.
  */
 function collect( string $content ): array {
 	$anchors = collect_from_blocks( parse_blocks( $content ) );
@@ -94,7 +99,9 @@ function collect( string $content ): array {
 	/**
 	 * Filter the anchors gathered for a jumplinks navigation.
 	 *
-	 * @param array  $anchors Array of `[ 'id' => string, 'title' => string ]`.
+	 * Each anchor's `level` is 1 at the top level; filters may change it to nest anchors.
+	 *
+	 * @param array  $anchors Array of `[ 'id' => string, 'title' => string, 'level' => int ]`.
 	 * @param string $content Block markup the anchors were collected from.
 	 */
 	// phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores -- Slashed hook names are HM convention.
@@ -109,7 +116,7 @@ function collect( string $content ): array {
  *
  * @param array $blocks Parsed block tree.
  * @param int   $depth  Current recursion depth.
- * @return array<int, array{id: string, title: string}> Anchor id/title pairs.
+ * @return array<int, array{id: string, title: string, level: int}> Anchors, with level 1 at the top.
  */
 function collect_from_blocks( array $blocks, int $depth = 0 ): array {
 	if ( $depth > MAX_DEPTH ) {
@@ -143,7 +150,7 @@ function collect_from_blocks( array $blocks, int $depth = 0 ): array {
  * Extract anchors from a single block's own HTML.
  *
  * @param string $html Block markup, excluding inner blocks.
- * @return array<int, array{id: string, title: string}> Anchor id/title pairs.
+ * @return array<int, array{id: string, title: string, level: int}> Anchors, with level 1 at the top.
  */
 function collect_from_markup( string $html ): array {
 	if ( ! str_contains( $html, TITLE_ATTRIBUTE . '=' ) ) {
@@ -165,6 +172,7 @@ function collect_from_markup( string $html ): array {
 		$anchors[] = [
 			'id'    => $id,
 			'title' => $title,
+			'level' => max( 1, (int) $processor->get_attribute( LEVEL_ATTRIBUTE ) ),
 		];
 	}
 

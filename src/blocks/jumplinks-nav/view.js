@@ -8,6 +8,7 @@
 const NAV_SELECTOR = '.hm-jumplinks-nav';
 const ITEM_SELECTOR = '.hm-jumplinks-nav__list li';
 const ACTIVE_CLASS = 'is-active';
+const ACTIVE_ANCESTOR_CLASS = 'is-active-ancestor';
 const STICKY_OFFSET_PROPERTY = '--hm-jumplinks-sticky-offset';
 const PROGRESS_PROPERTY = '--hm-jumplinks-progress';
 
@@ -108,7 +109,6 @@ function scrollToAnchor( target ) {
  */
 function initNav( nav ) {
 	const links = nav.querySelectorAll( 'a[href^="#"]' );
-	const items = nav.querySelectorAll( ITEM_SELECTOR );
 
 	links.forEach( ( link ) => {
 		// Capture phase plus stopImmediatePropagation: theme navigation
@@ -136,19 +136,21 @@ function initNav( nav ) {
 
 	const anchors = [];
 
-	links.forEach( ( link, index ) => {
+	links.forEach( ( link ) => {
 		const element = document.getElementById(
 			link.getAttribute( 'href' ).slice( 1 )
 		);
 
 		if ( element ) {
-			anchors.push( { element, item: items[ index ] } );
+			anchors.push( { element, item: link.closest( 'li' ) } );
 		}
 	} );
 
 	if ( ! anchors.length ) {
 		return;
 	}
+
+	const items = nav.querySelectorAll( ITEM_SELECTOR );
 
 	// Anchors count as "reached" once they cross the upper third of the
 	// viewport, which is also where the observer below starts reporting them.
@@ -163,8 +165,18 @@ function initNav( nav ) {
 			}
 		}
 
-		items.forEach( ( item ) => item.classList.remove( ACTIVE_CLASS ) );
+		items.forEach( ( item ) =>
+			item.classList.remove( ACTIVE_CLASS, ACTIVE_ANCESTOR_CLASS )
+		);
 		active?.classList.add( ACTIVE_CLASS );
+
+		// Mark the items a nested active item sits under, so themes can
+		// highlight its section or expand only the active branch.
+		let ancestor = active?.parentElement.closest( 'li' );
+		while ( ancestor && nav.contains( ancestor ) ) {
+			ancestor.classList.add( ACTIVE_ANCESTOR_CLASS );
+			ancestor = ancestor.parentElement.closest( 'li' );
+		}
 	};
 
 	const setProgress = () => {

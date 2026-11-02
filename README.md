@@ -8,12 +8,18 @@ The navigation discovers its own items — authors place jumplinks where they wa
 
 ### Jumplink (`hm/jumplink`)
 
-An invisible, zero-height scroll target. Authors give it a **Title** (the label used in the navigation) and a slug, which is derived from the title but can be overridden. An optional per-anchor **scroll offset** is added to the automatically measured sticky-header offset, for sections that need extra clearance.
+An invisible, zero-height scroll target. Authors give it a **Title** (the label used in the navigation) and a slug, which is derived from the title but can be overridden. An optional per-anchor **scroll offset** is added to the automatically measured sticky-header offset, for sections that need extra clearance. A **Level** nests the anchor in the navigation under the closest earlier anchor one level up, for subsections.
 
 It saves as a single element:
 
 ```html
 <div id="how-it-works" data-jumplink-title="How it works" style="--hm-jumplink-offset:24px"></div>
+```
+
+A nested anchor also carries its level, which is left out at the top level:
+
+```html
+<div id="key-components" data-jumplink-title="Key components" data-jumplink-level="2"></div>
 ```
 
 ### Jumplinks Navigation (`hm/jumplinks-nav`)
@@ -29,6 +35,8 @@ Server-rendered from the content being displayed:
 The block renders nothing when there are no anchors, and an explanatory placeholder in the editor.
 
 Block styles: **Vertical** (default), **Horizontal**, and **Horizontal (spread)**. The horizontal variants drop the heading and progress marker, and on narrow screens scroll on a single line with faded edges instead of wrapping.
+
+Anchors with a level are listed in nested lists under the item before them. A level can only go one deeper than the item before it, so an anchor at level 3 after one at level 1 is listed at level 2. The horizontal variants show only the top level.
 
 ## Installation
 
@@ -52,11 +60,12 @@ Property | Default | Purpose
 `--hm-jumplinks-rule-color` | `rgba(0, 0, 0, 0.15)` | The rule beside the vertical list.
 `--hm-jumplinks-gap` | `0.5rem` | Space between items.
 `--hm-jumplinks-indent` | `1rem` | Space between the rule and the item text.
+`--hm-jumplinks-nested-indent` | `1rem` | Indent of nested lists.
 `--hm-jumplinks-gutter` | `1rem` | The container's inline padding. Used by the mobile horizontal scroller to bleed and fade its edges; set it to match the padding of the bar the navigation sits in.
 `--hm-jumplinks-progress` | — | Read-only, `0`–`1`, written by the view script.
 `--hm-jumplinks-sticky-offset` | — | Height of the sticky header, on `:root`. See below.
 
-The active item carries `.is-active`; the list is `.hm-jumplinks-nav__list`, its heading `.hm-jumplinks-nav__label`.
+The active item carries `.is-active`, and the items it is nested under carry `.is-active-ancestor`; the list is `.hm-jumplinks-nav__list`, nested lists are `.hm-jumplinks-nav__sublist`, and the heading is `.hm-jumplinks-nav__label`.
 
 ### The sticky offset
 
@@ -74,6 +83,8 @@ add_filter( 'hm/jumplinks/anchors', function ( array $anchors, string $content )
 	return $anchors;
 }, 10, 2 );
 ```
+
+Each collected anchor also has a `level`, `1` at the top level. A filter can set it to nest anchors that have none in their markup, such as by the level of the heading each anchor precedes.
 
 ## Development
 
